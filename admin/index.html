@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#08090c"
+    >
+
+    <title>StreamBox Admin Dashboard</title>
+
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+    <!-- ================================================
+         ADMIN APP
+    ================================================= -->
+
+    <div id="adminApp" class="admin-app">
+
+        <!-- ============================================
+             SIDEBAR
+        ============================================= -->
+
+        <aside class="admin-sidebar" id="adminSidebar">
+
+            <div class="sidebar-top">
+
+                <a
+                    href="../index.html"
+                    class="admin-brand"
+                >
+                    <span class="brand-icon">S</span>
+
+                    <span class="brand-text">
+                        <strong>StreamBox</strong>
+                        <small>ADMIN</small>
+                    </span>
+                </a>
+
+                <button
+                    type="button"
+                    id="closeSidebar"
+                    class="mobile-sidebar-button"
+                    aria-label="Close menu"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <!-- Navigation -->
+
+            <nav class="admin-navigation">
+
+                <button
+                    type="button"
+                    class="nav-item active"
+                    data-section="overview"
+                >
+                    <span class="nav-icon">⌂</span>
+                    <span>Overview</span>
+                </button>
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-section="content"
+                >
+                    <span class="nav-icon">▣</span>
+                    <span>Content</span>
+                </button>
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-section="categories"
+                >
+                    <span class="nav-icon">◫</span>
+                    <span>Categories</span>
+                </button>
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-section="users"
+                >
+                    <span class="nav-icon">♙</span>
+                    <span>Users</span>
+                </button>
+
+                <button
+                    type="button"
+                    class="nav-item"
+                    data-section="settings"
+                >
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+                </button>
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="../index.html"
+                    class="sidebar-link"
+                >
+                    <span>↗</span>
+                    View Website
+                </a>
+
+                <button
+                    type="button"
+                    id="logoutButton"
+                    class="logout-button"
+                >
+                    <span>⇥</span>
+                    Sign Out
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ============================================
+             MAIN AREA
+        ============================================= -->
+
+        <div class="admin-main">
+
+            <!-- Header -->
+
+            <header class="admin-header">
+
+                <div class="header-left">
+
+                    <button
+                        type="button"
+                        id="openSidebar"
+                        class="mobile-menu-button"
+                        aria-label="Open menu"
+                    >
+                        ☰
+                    </button>
+
+                    <div>
+                        <p class="header-label">
+                            STREAMBOX ADMIN
+                        </p>
+
+                        <h1 id="pageTitle">
+                            Overview
+                        </h1>
+                    </div>
+
+                </div>
+
+
+                <div class="header-right">
+
+                    <div class="admin-account">
+
+                        <div
+                            class="account-avatar"
+                            id="accountAvatar"
+                        >
+                            A
+                        </div>
+
+                        <div class="account-info">
+                            <strong id="adminEmail">
+                                Admin
+                            </strong>
+
+                            <span>
+                                Administrator
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- ========================================
+                 CONTENT
+            ========================================= -->
+
+            <main class="admin-content">
+
+
+                <!-- ======================================
+                     OVERVIEW
+                ====================================== -->
+
+                <section
+                    id="section-overview"
+                    class="admin-section active"
+                >
+
+                    <div class="section-heading">
+
+                        <div>
+                            <h2>Dashboard</h2>
+
+                            <p>
+                                Manage your StreamBox platform
+                                from one place.
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            class="primary-button"
+                            data-section-target="content"
+                        >
+                            + Add Content
+                        </button>
+
+                    </div>
+
+
+                    <!-- Statistics -->
+
+                    <div class="stats-grid">
+
+                        <article class="stat-card">
+
+                            <div class="stat-top">
+                                <span>Content</span>
+                                <span class="stat-icon">▣</span>
+                            </div>
+
+                            <strong
+                                id="statContent"
+                                class="stat-value"
+                            >
+                                0
+                            </strong>
+
+                            <small>
+                                Total items
+                            </small>
+
+                        </article>
+
+
+                        <article class="stat-card">
+
+                            <div class="stat-top">
+                                <span>Movies</span>
+                                <span class="stat-icon">▶</span>
+                            </div>
+
+                            <strong
+                                id="statMovies"
+                                class="stat-value"
+                            >
+                                0
+                            </strong>
+
+                            <small>
+                                Movies
+                            </small>
+
+                        </article>
+
+
+                        <article class="stat-card">
+
+                            <div class="stat-top">
+                                <span>Series</span>
+                                <span class="stat-icon">▤</span>
+                            </div>
+
+                            <strong
+                                id="statSeries"
+                                class="stat-value"
+                            >
+                                0
+                            </strong>
+
+                            <small>
+                                Series
+                            </small>
+
+                        </article>
+
+
+                        <article class="stat-card">
+
+                            <div class="stat-top">
+                                <span>Users</span>
+                                <span class="stat-icon">♙</span>
+                            </div>
+
+                            <strong
+                                id="statUsers"
+                                class="stat-value"
+                            >
+                                0
+                            </strong>
+
+                            <small>
+                                Registered users
+                            </small>
+
+                        </article>
+
+                    </div>
+
+
+                    <!-- Recent Content -->
+
+                    <div class="dashboard-grid">
+
+                        <section class="panel">
+
+                            <div class="panel-header">
+
+                                <div>
+                                    <h3>Recent Content</h3>
+
+                                    <p>
+                                        Latest items added
+                                        to StreamBox.
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="text-button"
+                                    data-section-target="content"
+                                >
+                                    View all
+                                </button>
+
+                            </div>
+
+                            <div
+                                id="recentContent"
+                                class="recent-list"
+                            >
+                                <div class="empty-state">
+                                    <span>▣</span>
+                                    <p>No content yet.</p>
+                                </div>
+                            </div>
+
+                        </section>
+
+
+                        <!-- Quick Actions -->
+
+                        <section class="panel">
+
+                            <div class="panel-header">
+
+                                <div>
+                                    <h3>Quick Actions</h3>
+
+                                    <p>
+                                        Common administration
+                                        tasks.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="quick-actions">
+
+                                <button
+                                    type="button"
+                                    data-section-target="content"
+                                    class="quick-action"
+                                >
+                                    <span>+</span>
+                                    <div>
+                                        <strong>
+                                            Add Content
+                                        </strong>
+
+                                        <small>
+                                            Add a movie or series
+                                        </small>
+                                    </div>
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    data-section-target="categories"
+                                    class="quick-action"
+                                >
+                                    <span>◫</span>
+
+                                    <div>
+                                        <strong>
+                                            Categories
+                                        </strong>
+
+                                        <small>
+                                            Manage categories
+                                        </small>
+                                    </div>
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    data-section-target="settings"
+                                    class="quick-action"
+                                >
+                                    <span>⚙</span>
+
+                                    <div>
+                                        <strong>
+                                            Settings
+                                        </strong>
+
+                                        <small>
+                                            Configure StreamBox
+                                        </small>
+                                    </div>
+                                </button>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ======================================
+                     CONTENT
+                ====================================== -->
+
+                <section
+                    id="section-content"
+                    class="admin-section"
+                >
+
+                    <div class="section-heading">
+
+                        <div>
+                            <h2>Content</h2>
+
+                            <p>
+                                Add, edit and remove StreamBox
+                                content.
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="addContentButton"
+                            class="primary-button"
+                        >
+                            + Add Content
+                        </button>
+
+                    </div>
+
+
+                    <div class="content-toolbar">
+
+                        <div class="search-box">
+
+                            <span>⌕</span>
+
+                            <input
+                                type="search"
+                                id="contentSearch"
+                                placeholder="Search content..."
+                            >
+
+                        </div>
+
+
+                        <select id="contentTypeFilter">
+                            <option value="all">
+                                All types
+                            </option>
+
+                            <option value="movie">
+                                Movies
+                            </option>
+
+                            <option value="series">
+                                Series
+                            </option>
+
+                            <option value="music">
+                                Music
+                            </option>
+
+                            <option value="radio">
+                                Radio
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="panel content-table-panel">
+
+                        <div class="table-wrapper">
+
+                            <table class="content-table">
+
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Type</th>
+                                        <th>Category</th>
+                                        <th>Year</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="contentTableBody">
+
+                                    <tr>
+                                        <td
+                                            colspan="6"
+                                            class="table-empty"
+                                        >
+                                            No content available.
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ======================================
+                     CATEGORIES
+                ====================================== -->
+
+                <section
+                    id="section-categories"
+                    class="admin-section"
+                >
+
+                    <div class="section-heading">
+
+                        <div>
+                            <h2>Categories</h2>
+
+                            <p>
+                                Organize your StreamBox
+                                content.
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="addCategoryButton"
+                            class="primary-button"
+                        >
+                            + Add Category
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="categoriesGrid"
+                        class="categories-grid"
+                    >
+
+                        <div class="empty-state">
+                            <span>◫</span>
+                            <p>No categories yet.</p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ======================================
+                     USERS
+                ====================================== -->
+
+                <section
+                    id="section-users"
+                    class="admin-section"
+                >
+
+                    <div class="section-heading">
+
+                        <div>
+                            <h2>Users</h2>
+
+                            <p>
+                                View registered StreamBox
+                                users.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel">
+
+                        <div class="table-wrapper">
+
+                            <table class="content-table">
+
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Created</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="usersTableBody">
+
+                                    <tr>
+                                        <td
+                                            colspan="3"
+                                            class="table-empty"
+                                        >
+                                            No users available.
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ======================================
+                     SETTINGS
+                ====================================== -->
+
+                <section
+                    id="section-settings"
+                    class="admin-section"
+                >
+
+                    <div class="section-heading">
+
+                        <div>
+                            <h2>Settings</h2>
+
+                            <p>
+                                Configure your StreamBox
+                                administration settings.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-grid">
+
+                        <section class="panel settings-panel">
+
+                            <div class="panel-header">
+
+                                <div>
+                                    <h3>Platform</h3>
+
+                                    <p>
+                                        Basic platform
+                                        configuration.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <form id="platformSettingsForm">
+
+                                <div class="form-group">
+
+                                    <label for="siteName">
+                                        Site Name
+                                    </label>
+
+                                    <input
+                                        id="siteName"
+                                        type="text"
+                                        value="StreamBox"
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="siteDescription">
+                                        Description
+                                    </label>
+
+                                    <textarea
+                                        id="siteDescription"
+                                        rows="4"
+                                    >StreamBox streaming platform</textarea>
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    class="primary-button"
+                                >
+                                    Save Settings
+                                </button>
+
+                            </form>
+
+                        </section>
+
+
+                        <section class="panel settings-panel">
+
+                            <div class="panel-header">
+
+                                <div>
+                                    <h3>Account</h3>
+
+                                    <p>
+                                        Your administrator
+                                        account.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div class="account-settings">
+
+                                <div class="account-row">
+
+                                    <span>Email</span>
+
+                                    <strong
+                                        id="settingsAdminEmail"
+                                    >
+                                        —
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="account-row">
+
+                                    <span>Role</span>
+
+                                    <strong>
+                                        Administrator
+                                    </strong>
+
+                                </div>
+
+
+                                <button
+                                    type="button"
+                                    id="settingsLogoutButton"
+                                    class="danger-button"
+                                >
+                                    Sign Out
+                                </button>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                </section>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================
+         CONTENT MODAL
+    ================================================= -->
+
+    <div
+        id="contentModal"
+        class="modal hidden"
+        aria-hidden="true"
+    >
+
+        <div
+            class="modal-backdrop"
+            data-close-modal
+        ></div>
+
+        <div
+            class="modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="contentModalTitle"
+        >
+
+            <div class="modal-header">
+
+                <div>
+                    <p class="modal-label">
+                        STREAMBOX CONTENT
+                    </p>
+
+                    <h2 id="contentModalTitle">
+                        Add Content
+                    </h2>
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    data-close-modal
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="contentForm">
+
+                <input
+                    type="hidden"
+                    id="contentId"
+                >
+
+
+                <div class="form-grid">
+
+                    <div class="form-group full-width">
+
+                        <label for="contentTitle">
+                            Title
+                        </label>
+
+                        <input
+                            id="contentTitle"
+                            type="text"
+                            placeholder="Enter title"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="contentType">
+                            Type
+                        </label>
+
+                        <select
+                            id="contentType"
+                            required
+                        >
+                            <option value="movie">
+                                Movie
+                            </option>
+
+                            <option value="series">
+                                Series
+                            </option>
+
+                            <option value="music">
+                                Music
+                            </option>
+
+                            <option value="radio">
+                                Radio
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="contentYear">
+                            Year
+                        </label>
+
+                        <input
+                            id="contentYear"
+                            type="number"
+                            min="1900"
+                            max="2100"
+                            placeholder="2026"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="contentCategory">
+                            Category
+                        </label>
+
+                        <select id="contentCategory">
+
+                            <option value="">
+                                Select category
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="posterUrl">
+                            Poster URL
+                        </label>
+
+                        <input
+                            id="posterUrl"
+                            type="url"
+                            placeholder="https://..."
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="videoUrl">
+                            Video / Audio URL
+                        </label>
+
+                        <input
+                            id="videoUrl"
+                            type="url"
+                            placeholder="https://..."
+                        >
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="contentDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="contentDescription"
+                            rows="5"
+                            placeholder="Content description..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="form-group checkbox-group">
+
+                        <label class="checkbox-label">
+
+                            <input
+                                id="contentPublished"
+                                type="checkbox"
+                                checked
+                            >
+
+                            <span>
+                                Publish this content
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="contentFormMessage"
+                    class="form-message hidden"
+                ></div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        data-close-modal
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                        id="saveContentButton"
+                    >
+                        Save Content
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================
+         CATEGORY MODAL
+    ================================================= -->
+
+    <div
+        id="categoryModal"
+        class="modal hidden"
+        aria-hidden="true"
+    >
+
+        <div
+            class="modal-backdrop"
+            data-close-category-modal
+        ></div>
+
+        <div
+            class="modal-dialog small"
+            role="dialog"
+            aria-modal="true"
+        >
+
+            <div class="modal-header">
+
+                <div>
+                    <p class="modal-label">
+                        STREAMBOX
+                    </p>
+
+                    <h2>
+                        Add Category
+                    </h2>
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    data-close-category-modal
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="categoryForm">
+
+                <div class="form-group">
+
+                    <label for="categoryName">
+                        Category Name
+                    </label>
+
+                    <input
+                        id="categoryName"
+                        type="text"
+                        placeholder="e.g. Action"
+                        required
+                    >
+
+                </div>
+
+
+                <div
+                    id="categoryFormMessage"
+                    class="form-message hidden"
+                ></div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        data-close-category-modal
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                    >
+                        Add Category
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================
+         CONFIRM MODAL
+    ================================================= -->
+
+    <div
+        id="confirmModal"
+        class="modal hidden"
+        aria-hidden="true"
+    >
+
+        <div
+            class="modal-backdrop"
+            data-close-confirm
+        ></div>
+
+        <div
+            class="modal-dialog small"
+            role="dialog"
+            aria-modal="true"
+        >
+
+            <div class="confirm-content">
+
+                <div class="confirm-icon">
+                    !
+                </div>
+
+                <h2 id="confirmTitle">
+                    Are you sure?
+                </h2>
+
+                <p id="confirmMessage">
+                    This action cannot be undone.
+                </p>
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        id="cancelConfirm"
+                        class="secondary-button"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="button"
+                        id="confirmAction"
+                        class="danger-button"
+                    >
+                        Confirm
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================
+         TOAST
+    ================================================= -->
+
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    >
+        <span id="toastMessage"></span>
+    </div>
+
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Admin JavaScript -->
+    <script src="admin.js"></script>
+
+</body>
+</html>
