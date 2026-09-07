@@ -19,8 +19,8 @@
    - private credentials
 ========================================================= */
 
-const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-const SUPABASE_PUBLISHABLE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+const SUPABASE_URL = "https://lxpjoemravgwlbllmabh.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_G189DQuZqugIVHfZOYNvNw_tGr3LbNw";
 
 const supabaseConfigured =
     SUPABASE_URL &&
