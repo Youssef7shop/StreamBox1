@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <meta name="theme-color" content="#08090c">
+    <meta name="description" content="StreamBox - منصة ترفيهية للمشاهدة والاستماع">
+
+    <title>StreamBox</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+    <!-- =========================================================
+         ACCESS SCREEN
+    ========================================================== -->
+    <section id="accessScreen" class="access-screen">
+        <div class="access-card">
+
+            <div class="brand brand-center">
+                <span class="brand-mark">S</span>
+                <span class="brand-name">StreamBox</span>
+            </div>
+
+            <div class="access-content">
+                <span class="eyebrow">PRIVATE ACCESS</span>
+
+                <h1>مرحبا بك في StreamBox</h1>
+
+                <p>
+                    أدخل رمز الدخول للمتابعة إلى المنصة.
+                </p>
+
+                <form id="accessForm" autocomplete="off">
+                    <label for="accessCode">رمز الدخول</label>
+
+                    <div class="input-wrap">
+                        <span class="input-icon">#</span>
+
+                        <input
+                            id="accessCode"
+                            name="accessCode"
+                            type="text"
+                            placeholder="STREAM-2026"
+                            autocomplete="off"
+                            spellcheck="false"
+                            maxlength="50"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="primary-button full-button">
+                        <span>متابعة</span>
+                        <span class="button-arrow">←</span>
+                    </button>
+
+                    <p id="accessError" class="form-error hidden">
+                        رمز الدخول غير صحيح.
+                    </p>
+                </form>
+            </div>
+
+            <div class="access-footer">
+                <span>StreamBox</span>
+                <span>•</span>
+                <span>Entertainment Platform</span>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         MAIN APPLICATION
+    ========================================================== -->
+    <div id="app" class="app hidden">
+
+        <!-- HEADER -->
+        <header id="siteHeader" class="site-header">
+
+            <div class="header-inner">
+
+                <button
+                    id="mobileMenuButton"
+                    class="icon-button mobile-menu-button"
+                    type="button"
+                    aria-label="فتح القائمة"
+                >
+                    ☰
+                </button>
+
+                <a href="#home" class="brand" data-page="home">
+                    <span class="brand-mark">S</span>
+                    <span class="brand-name">StreamBox</span>
+                </a>
+
+                <nav id="mainNavigation" class="main-navigation">
+
+                    <button class="nav-link active" data-page="home">
+                        الرئيسية
+                    </button>
+
+                    <button class="nav-link" data-page="movies">
+                        أفلام
+                    </button>
+
+                    <button class="nav-link" data-page="series">
+                        مسلسلات
+                    </button>
+
+                    <button class="nav-link" data-page="kids">
+                        أطفال
+                    </button>
+
+                    <button class="nav-link" data-page="music">
+                        موسيقى
+                    </button>
+
+                    <button class="nav-link" data-page="radio">
+                        راديو مباشر
+                    </button>
+
+                </nav>
+
+                <div class="header-actions">
+
+                    <button
+                        id="searchButton"
+                        class="icon-button"
+                        type="button"
+                        aria-label="بحث"
+                        title="بحث"
+                    >
+                        ⌕
+                    </button>
+
+                </div>
+
+            </div>
+        </header>
+
+
+        <!-- SEARCH PANEL -->
+        <section id="searchPanel" class="search-panel hidden">
+
+            <div class="search-inner">
+
+                <div class="search-box">
+
+                    <span class="search-symbol">⌕</span>
+
+                    <input
+                        id="searchInput"
+                        type="search"
+                        placeholder="ابحث عن فيلم، مسلسل، تصنيف..."
+                        autocomplete="off"
+                    >
+
+                    <button
+                        id="closeSearchButton"
+                        class="icon-button"
+                        type="button"
+                        aria-label="إغلاق البحث"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+                <div id="searchResults" class="search-results"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MAIN -->
+        <main id="mainContent">
+
+            <!-- =================================================
+                 HOME PAGE
+            ================================================== -->
+            <section id="homePage" class="page active-page">
+
+                <!-- HERO -->
+                <section id="heroSection" class="hero">
+
+                    <div class="hero-backdrop">
+                        <div class="hero-backdrop-image"></div>
+                        <div class="hero-overlay"></div>
+                    </div>
+
+                    <div class="hero-content page-container">
+
+                        <span id="heroCategory" class="hero-category">
+                            STREAMBOX ORIGINAL
+                        </span>
+
+                        <h1 id="heroTitle">StreamBox</h1>
+
+                        <p id="heroDescription">
+                            استمتع بالمحتوى المفضل لديك في مكان واحد.
+                        </p>
+
+                        <div class="hero-meta">
+                            <span id="heroYear">2026</span>
+                            <span class="meta-dot">•</span>
+                            <span id="heroType">Entertainment</span>
+                            <span class="meta-dot">•</span>
+                            <span id="heroRating">—</span>
+                        </div>
+
+                        <div class="hero-actions">
+
+                            <button
+                                id="heroWatchButton"
+                                class="primary-button"
+                                type="button"
+                            >
+                                ▶ مشاهدة الآن
+                            </button>
+
+                            <button
+                                id="heroInfoButton"
+                                class="secondary-button"
+                                type="button"
+                            >
+                                المزيد من المعلومات
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- HOME CONTENT -->
+                <div class="page-container home-content">
+
+                    <div id="homeError" class="error-state hidden"></div>
+
+                    <section
+                        id="featuredSection"
+                        class="content-section hidden"
+                    >
+                        <div class="section-heading">
+                            <div>
+                                <span class="section-kicker">CURATED</span>
+                                <h2>محتوى مميز</h2>
+                            </div>
+
+                            <button
+                                class="see-all-button"
+                                data-page="movies"
+                                type="button"
+                            >
+                                مشاهدة الكل
+                            </button>
+                        </div>
+
+                        <div
+                            id="featuredGrid"
+                            class="media-grid horizontal-grid"
+                        ></div>
+                    </section>
+
+
+                    <section class="content-section">
+
+                        <div class="section-heading">
+                            <div>
+                                <span class="section-kicker">MOVIES</span>
+                                <h2>أفلام</h2>
+                            </div>
+
+                            <button
+                                class="see-all-button"
+                                data-page="movies"
+                                type="button"
+                            >
+                                مشاهدة الكل
+                            </button>
+                        </div>
+
+                        <div
+                            id="moviesGrid"
+                            class="media-grid horizontal-grid"
+                        ></div>
+
+                    </section>
+
+
+                    <section class="content-section">
+
+                        <div class="section-heading">
+                            <div>
+                                <span class="section-kicker">SERIES</span>
+                                <h2>مسلسلات ودراما</h2>
+                            </div>
+
+                            <button
+                                class="see-all-button"
+                                data-page="series"
+                                type="button"
+                            >
+                                مشاهدة الكل
+                            </button>
+                        </div>
+
+                        <div
+                            id="seriesGrid"
+                            class="media-grid horizontal-grid"
+                        ></div>
+
+                    </section>
+
+
+                    <section class="content-section">
+
+                        <div class="section-heading">
+                            <div>
+                                <span class="section-kicker">KIDS</span>
+                                <h2>للأطفال</h2>
+                            </div>
+
+                            <button
+                                class="see-all-button"
+                                data-page="kids"
+                                type="button"
+                            >
+                                مشاهدة الكل
+                            </button>
+                        </div>
+
+                        <div
+                            id="kidsGrid"
+                            class="media-grid horizontal-grid"
+                        ></div>
+
+                    </section>
+
+
+                    <section class="content-section">
+
+                        <div class="section-heading">
+                            <div>
+                                <span class="section-kicker">LATEST</span>
+                                <h2>أضيف حديثا</h2>
+                            </div>
+                        </div>
+
+                        <div
+                            id="recentGrid"
+                            class="media-grid horizontal-grid"
+                        ></div>
+
+                    </section>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 CATALOG PAGE
+            ================================================== -->
+            <section id="catalogPage" class="page">
+
+                <div class="page-container catalog-container">
+
+                    <div class="page-title">
+                        <span id="catalogKicker" class="section-kicker">
+                            CATALOG
+                        </span>
+
+                        <h1 id="catalogTitle">الأفلام</h1>
+
+                        <p id="catalogDescription">
+                            اكتشف أحدث المحتويات.
+                        </p>
+                    </div>
+
+                    <div id="catalogError" class="error-state hidden"></div>
+
+                    <div
+                        id="catalogGrid"
+                        class="media-grid catalog-grid"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 MUSIC PAGE
+            ================================================== -->
+            <section id="musicPage" class="page">
+
+                <div class="page-container catalog-container">
+
+                    <div class="page-title">
+                        <span class="section-kicker">AUDIO</span>
+                        <h1>الموسيقى</h1>
+                        <p>
+                            استمع إلى الموسيقى المضافة إلى StreamBox.
+                        </p>
+                    </div>
+
+                    <div id="musicError" class="error-state hidden"></div>
+
+                    <div
+                        id="musicGrid"
+                        class="music-grid"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 RADIO PAGE
+            ================================================== -->
+            <section id="radioPage" class="page">
+
+                <div class="page-container catalog-container">
+
+                    <div class="page-title">
+                        <span class="section-kicker">LIVE AUDIO</span>
+                        <h1>راديو مباشر</h1>
+                        <p>
+                            استمع إلى محطات الراديو المتاحة.
+                        </p>
+                    </div>
+
+                    <div id="radioError" class="error-state hidden"></div>
+
+                    <div
+                        id="radioGrid"
+                        class="radio-grid"
+                    ></div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+
+            <div class="page-container footer-inner">
+
+                <div class="footer-brand">
+                    <span class="brand-mark small-mark">S</span>
+                    <strong>StreamBox</strong>
+                </div>
+
+                <p>
+                    منصة ترفيهية للمشاهدة والاستماع.
+                </p>
+
+                <span class="footer-copy">
+                    © <span id="currentYear"></span> StreamBox
+                </span>
+
+            </div>
+
+        </footer>
+
+    </div>
+
+
+    <!-- =========================================================
+         DETAILS MODAL
+    ========================================================== -->
+    <div
+        id="detailsModal"
+        class="modal hidden"
+        aria-hidden="true"
+    >
+
+        <div class="modal-backdrop" data-close-modal></div>
+
+        <div
+            class="details-modal modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="detailsTitle"
+        >
+
+            <button
+                class="modal-close"
+                type="button"
+                data-close-modal
+                aria-label="إغلاق"
+            >
+                ×
+            </button>
+
+            <div id="detailsBackdrop" class="details-backdrop">
+                <div class="details-backdrop-overlay"></div>
+            </div>
+
+            <div class="details-content">
+
+                <span id="detailsType" class="section-kicker">
+                    MOVIE
+                </span>
+
+                <h2 id="detailsTitle">العنوان</h2>
+
+                <div class="details-meta">
+                    <span id="detailsYear">—</span>
+                    <span>•</span>
+                    <span id="detailsCategory">—</span>
+                    <span>•</span>
+                    <span id="detailsRating">—</span>
+                </div>
+
+                <p id="detailsDescription">
+                    —
+                </p>
+
+                <div class="details-actions">
+
+                    <button
+                        id="detailsWatchButton"
+                        class="primary-button"
+                        type="button"
+                    >
+                        ▶ مشاهدة
+                    </button>
+
+                    <button
+                        class="secondary-button"
+                        type="button"
+                        data-close-modal
+                    >
+                        إغلاق
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         VIDEO MODAL
+    ========================================================== -->
+    <div
+        id="videoModal"
+        class="modal hidden"
+        aria-hidden="true"
+    >
+
+        <div class="modal-backdrop" data-close-video></div>
+
+        <div class="video-modal modal-dialog">
+
+            <button
+                class="modal-close"
+                type="button"
+                data-close-video
+                aria-label="إغلاق"
+            >
+                ×
+            </button>
+
+            <div class="video-header">
+                <div>
+                    <span class="section-kicker">NOW PLAYING</span>
+                    <h2 id="videoTitle">StreamBox</h2>
+                </div>
+            </div>
+
+            <div class="video-container">
+
+                <video
+                    id="videoPlayer"
+                    controls
+                    playsinline
+                    preload="metadata"
+                ></video>
+
+                <div
+                    id="videoEmpty"
+                    class="player-empty hidden"
+                >
+                    <div class="empty-icon">▶</div>
+                    <h3>الفيديو غير متوفر</h3>
+                    <p>
+                        لا يوجد رابط فيديو لهذا المحتوى حاليا.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         AUDIO PLAYER
+    ========================================================== -->
+    <aside
+        id="audioPlayerBar"
+        class="audio-player-bar hidden"
+        aria-label="مشغل الصوت"
+    >
+
+        <div class="audio-info">
+
+            <div
+                id="audioCover"
+                class="audio-cover"
+            >
+                ♪
+            </div>
+
+            <div class="audio-text">
+                <strong id="audioTitle">—</strong>
+                <span id="audioArtist">—</span>
+            </div>
+
+        </div>
+
+        <div class="audio-controls">
+
+            <button
+                id="audioPlayButton"
+                class="player-button"
+                type="button"
+                aria-label="تشغيل"
+            >
+                ▶
+            </button>
+
+            <audio
+                id="audioElement"
+                controls
+                preload="none"
+            ></audio>
+
+        </div>
+
+        <button
+            id="closeAudioButton"
+            class="icon-button"
+            type="button"
+            aria-label="إغلاق المشغل"
+        >
+            ×
+        </button>
+
+    </aside>
+
+
+    <!-- =========================================================
+         RADIO PLAYER
+    ========================================================== -->
+    <aside
+        id="radioPlayerBar"
+        class="radio-player-bar hidden"
+    >
+
+        <div class="live-pulse"></div>
+
+        <div class="radio-player-info">
+
+            <span class="live-label">LIVE</span>
+
+            <strong id="radioPlayerTitle">
+                —
+            </strong>
+
+        </div>
+
+        <audio
+            id="radioAudioElement"
+            controls
+            preload="none"
+        ></audio>
+
+        <button
+            id="closeRadioButton"
+            class="icon-button"
+            type="button"
+            aria-label="إغلاق الراديو"
+        >
+            ×
+        </button>
+
+    </aside>
+
+
+    <!-- TOAST -->
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+
+    <script src="app.js"></script>
+
+</body>
+</html>
