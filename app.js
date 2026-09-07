@@ -40,7 +40,7 @@ const supabaseClient = supabaseConfigured
    ACCESS CODE
 ========================================================= */
 
-const ACCESS_CODE = "000000";
+const ACCESS_CODE = "STREAM-2026";
 
 const ACCESS_STORAGE_KEY = "streambox_access_granted";
 
