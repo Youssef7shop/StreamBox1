@@ -2,7 +2,9 @@
    STREAMBOX ADMIN - COMPLETE admin.js
    ========================================================= */
 
-const SUPABASE_URL = "https://lxpjoemravgwlbllmabh.supabase.co";
+const SUPABASE_URL =
+    "https://lxpjoemravgwlbllmabh.supabase.co";
+
 const SUPABASE_ANON_KEY =
     "sb_publishable_G189DQuZqugIVHfZOYNvNw_tGr3LbNw";
 
@@ -10,6 +12,7 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
 );
+
 
 /* =========================================================
    HELPERS
@@ -47,7 +50,13 @@ function toast(message, type = "success") {
 
     text.textContent = message;
 
-    box.classList.remove("show", "success", "error", "warning");
+    box.classList.remove(
+        "show",
+        "success",
+        "error",
+        "warning"
+    );
+
     box.classList.add(type);
     box.classList.add("show");
 
@@ -60,6 +69,7 @@ function toast(message, type = "success") {
 
 function message(id, text = "", type = "error") {
     const el = $(id);
+
     if (!el) return;
 
     el.textContent = text;
@@ -70,46 +80,66 @@ function message(id, text = "", type = "error") {
     }
 
     el.classList.remove("hidden");
-    el.classList.remove("error", "success");
+    el.classList.remove("error", "success", "warning");
     el.classList.add(type);
 }
 
+
 /* =========================================================
-   ADMIN AUTH
+   AUTH
    ========================================================= */
+
+async function getSessionUser() {
+    try {
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.getSession();
+
+        if (error) {
+            console.error("Session error:", error);
+            return null;
+        }
+
+        return data?.session?.user || null;
+
+    } catch (error) {
+        console.error("Session exception:", error);
+        return null;
+    }
+}
+
 
 async function isAdmin(user) {
     if (!user?.id) return false;
 
-    const { data, error } = await supabaseClient
-        .from("admin_profiles")
-        .select("id,user_id,role")
-        .eq("user_id", user.id)
-        .eq("role", "admin")
-        .maybeSingle();
+    try {
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("admin_profiles")
+            .select("id,user_id,role")
+            .eq("user_id", user.id)
+            .eq("role", "admin")
+            .maybeSingle();
 
-    if (error) {
-        console.error("Admin check error:", error);
+        if (error) {
+            console.error("Admin verification error:", error);
+            return false;
+        }
+
+        return Boolean(data);
+
+    } catch (error) {
+        console.error("Admin verification exception:", error);
         return false;
     }
-
-    return !!data;
 }
 
-async function getSessionUser() {
-    const { data, error } =
-        await supabaseClient.auth.getSession();
-
-    if (error) {
-        console.error(error);
-        return null;
-    }
-
-    return data?.session?.user || null;
-}
 
 /* =========================================================
-   LOGIN
+   LOGIN PAGE
    ========================================================= */
 
 function initLogin() {
@@ -127,18 +157,22 @@ function initLogin() {
     const errorBox = $("loginError");
     const successBox = $("loginSuccess");
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
         errorBox?.classList.add("hidden");
         successBox?.classList.add("hidden");
 
-        const emailValue = email?.value.trim();
-        const passwordValue = password?.value;
+        const emailValue =
+            email?.value?.trim() || "";
+
+        const passwordValue =
+            password?.value || "";
 
         if (!emailValue) {
             if (errorBox) {
-                errorBox.textContent = "Enter your email.";
+                errorBox.textContent =
+                    "Please enter your email.";
                 errorBox.classList.remove("hidden");
             }
             return;
@@ -146,24 +180,35 @@ function initLogin() {
 
         if (!passwordValue) {
             if (errorBox) {
-                errorBox.textContent = "Enter your password.";
+                errorBox.textContent =
+                    "Please enter your password.";
                 errorBox.classList.remove("hidden");
             }
             return;
         }
 
-        if (button) button.disabled = true;
-        if (spinner) spinner.classList.remove("hidden");
-        if (buttonText) buttonText.textContent = "Signing in...";
+        if (button) {
+            button.disabled = true;
+        }
+
+        spinner?.classList.remove("hidden");
+
+        if (buttonText) {
+            buttonText.textContent = "Signing in...";
+        }
 
         try {
-            const { data, error } =
-                await supabaseClient.auth.signInWithPassword({
-                    email: emailValue,
-                    password: passwordValue
-                });
+            const {
+                data,
+                error
+            } = await supabaseClient.auth.signInWithPassword({
+                email: emailValue,
+                password: passwordValue
+            });
 
-            if (error) throw error;
+            if (error) {
+                throw error;
+            }
 
             const user = data?.user;
 
@@ -175,6 +220,7 @@ function initLogin() {
 
             if (!admin) {
                 await supabaseClient.auth.signOut();
+
                 throw new Error(
                     "This account is not an administrator."
                 );
@@ -183,37 +229,50 @@ function initLogin() {
             if (successBox) {
                 successBox.textContent =
                     "Login successful. Redirecting...";
+
                 successBox.classList.remove("hidden");
             }
 
-            setTimeout(() => {
+            window.setTimeout(() => {
                 window.location.href = "index.html";
-            }, 400);
+            }, 300);
 
         } catch (error) {
-            console.error(error);
+            console.error("Login error:", error);
 
             if (errorBox) {
                 errorBox.textContent =
-                    error.message ||
+                    error?.message ||
                     "Invalid email or password.";
+
                 errorBox.classList.remove("hidden");
             }
 
         } finally {
-            if (button) button.disabled = false;
-            if (spinner) spinner.classList.add("hidden");
-            if (buttonText) buttonText.textContent = "Sign In";
+            if (button) {
+                button.disabled = false;
+            }
+
+            spinner?.classList.add("hidden");
+
+            if (buttonText) {
+                buttonText.textContent = "Sign In";
+            }
         }
     });
 }
 
+
 /* =========================================================
-   DASHBOARD AUTH
+   DASHBOARD PROTECTION
    ========================================================= */
 
 async function protectDashboard() {
-    if (!$("adminApp")) return null;
+    const app = $("adminApp");
+
+    if (!app) {
+        return null;
+    }
 
     const user = await getSessionUser();
 
@@ -226,6 +285,7 @@ async function protectDashboard() {
 
     if (!admin) {
         await supabaseClient.auth.signOut();
+
         window.location.replace("login.html");
         return null;
     }
@@ -233,31 +293,35 @@ async function protectDashboard() {
     return user;
 }
 
+
 /* =========================================================
    NAVIGATION
    ========================================================= */
 
 function initNavigation() {
+
     document
         .querySelectorAll(".nav-item[data-section]")
         .forEach((button) => {
 
             button.addEventListener("click", () => {
-                const section = button.dataset.section;
+
+                const section =
+                    button.dataset.section;
 
                 document
                     .querySelectorAll(".nav-item")
-                    .forEach((item) =>
-                        item.classList.remove("active")
-                    );
+                    .forEach((item) => {
+                        item.classList.remove("active");
+                    });
 
                 button.classList.add("active");
 
                 document
                     .querySelectorAll(".admin-section")
-                    .forEach((sectionElement) =>
-                        sectionElement.classList.remove("active")
-                    );
+                    .forEach((sectionElement) => {
+                        sectionElement.classList.remove("active");
+                    });
 
                 const target =
                     $(`section-${section}`);
@@ -266,26 +330,30 @@ function initNavigation() {
                     target.classList.add("active");
                 }
 
-                if ($("pageTitle")) {
-                    const titles = {
-                        overview: "Overview",
-                        content: "Content",
-                        categories: "Categories",
-                        users: "Users",
-                        settings: "Settings"
-                    };
+                const titles = {
+                    overview: "Overview",
+                    content: "Content",
+                    categories: "Categories",
+                    users: "Users",
+                    settings: "Settings"
+                };
 
+                if ($("pageTitle")) {
                     $("pageTitle").textContent =
                         titles[section] || "Overview";
                 }
+
+                closeMobileSidebar();
             });
         });
+
 
     document
         .querySelectorAll("[data-section-target]")
         .forEach((button) => {
 
             button.addEventListener("click", () => {
+
                 const section =
                     button.dataset.sectionTarget;
 
@@ -299,6 +367,35 @@ function initNavigation() {
         });
 }
 
+
+/* =========================================================
+   MOBILE SIDEBAR
+   ========================================================= */
+
+function initSidebar() {
+
+    const sidebar = $("adminSidebar");
+    const openButton = $("openSidebar");
+    const closeButton = $("closeSidebar");
+
+    if (!sidebar) return;
+
+    openButton?.addEventListener("click", () => {
+        sidebar.classList.add("open");
+    });
+
+    closeButton?.addEventListener("click", () => {
+        closeMobileSidebar();
+    });
+}
+
+
+function closeMobileSidebar() {
+
+    $("adminSidebar")?.classList.remove("open");
+}
+
+
 /* =========================================================
    DATA
    ========================================================= */
@@ -306,13 +403,17 @@ function initNavigation() {
 let categories = [];
 let content = [];
 
+
 /* =========================================================
    CATEGORIES
    ========================================================= */
 
 async function loadCategories() {
 
-    const { data, error } = await supabaseClient
+    const {
+        data,
+        error
+    } = await supabaseClient
         .from("categories")
         .select("*")
         .order("name", {
@@ -320,8 +421,13 @@ async function loadCategories() {
         });
 
     if (error) {
-        console.error(error);
+        console.error("Categories error:", error);
+
         categories = [];
+
+        renderCategories();
+        fillCategorySelect();
+
         return;
     }
 
@@ -330,6 +436,7 @@ async function loadCategories() {
     renderCategories();
     fillCategorySelect();
 }
+
 
 function fillCategorySelect() {
 
@@ -340,13 +447,16 @@ function fillCategorySelect() {
     select.innerHTML = `
         <option value="">Select category</option>
 
-        ${categories.map(category => `
-            <option value="${escapeHTML(category.id)}">
-                ${escapeHTML(category.name)}
-            </option>
-        `).join("")}
+        ${categories
+            .map((category) => `
+                <option value="${escapeHTML(category.id)}">
+                    ${escapeHTML(category.name)}
+                </option>
+            `)
+            .join("")}
     `;
 }
+
 
 function renderCategories() {
 
@@ -359,7 +469,7 @@ function renderCategories() {
 
         container.innerHTML = `
             <div class="empty-state">
-                <span>▦</span>
+                <span>◫</span>
                 <p>No categories yet.</p>
             </div>
         `;
@@ -368,61 +478,62 @@ function renderCategories() {
     }
 
     container.innerHTML =
-        categories.map(category => {
+        categories
+            .map((category) => {
 
-            const count =
-                content.filter(
-                    item =>
-                        item.category_id ===
-                        category.id
-                ).length;
+                const count =
+                    content.filter(
+                        (item) =>
+                            String(item.category_id) ===
+                            String(category.id)
+                    ).length;
 
-            return `
-                <div class="category-card">
+                return `
+                    <div class="category-card">
 
-                    <div class="category-card-header">
-                        <h3>
-                            ${escapeHTML(category.name)}
-                        </h3>
+                        <div class="category-card-header">
+                            <h3>
+                                ${escapeHTML(category.name)}
+                            </h3>
+                        </div>
+
+                        <p class="category-count">
+                            ${count} content
+                        </p>
+
+                        <div class="category-actions">
+
+                            <button
+                                type="button"
+                                class="secondary-button"
+                                data-delete-category="${escapeHTML(category.id)}"
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+
                     </div>
+                `;
+            })
+            .join("");
 
-                    <p class="category-count">
-                        ${count} content
-                    </p>
-
-                    <div class="category-actions">
-
-                        <button
-                            type="button"
-                            class="secondary-button"
-                            data-delete-category="${category.id}"
-                        >
-                            Delete
-                        </button>
-
-                    </div>
-
-                </div>
-            `;
-
-        }).join("");
 
     container
-        .querySelectorAll(
-            "[data-delete-category]"
-        )
-        .forEach(button => {
+        .querySelectorAll("[data-delete-category]")
+        .forEach((button) => {
 
-            button.addEventListener(
-                "click",
-                () =>
-                    deleteCategory(
-                        button.dataset.deleteCategory
-                    )
-            );
+            button.addEventListener("click", () => {
+
+                deleteCategory(
+                    button.dataset.deleteCategory
+                );
+
+            });
 
         });
 }
+
 
 function openCategoryModal() {
 
@@ -431,7 +542,12 @@ function openCategoryModal() {
 
     if (!modal) return;
 
-    $("categoryName").value = "";
+    const input =
+        $("categoryName");
+
+    if (input) {
+        input.value = "";
+    }
 
     message(
         "categoryFormMessage",
@@ -439,13 +555,15 @@ function openCategoryModal() {
     );
 
     modal.classList.remove("hidden");
+
     modal.setAttribute(
         "aria-hidden",
         "false"
     );
 
-    $("categoryName")?.focus();
+    input?.focus();
 }
+
 
 function closeCategoryModal() {
 
@@ -462,12 +580,15 @@ function closeCategoryModal() {
     );
 }
 
-async function addCategory(e) {
 
-    e.preventDefault();
+async function addCategory(event) {
+
+    event.preventDefault();
 
     const name =
-        $("categoryName")?.value.trim();
+        $("categoryName")
+            ?.value
+            ?.trim() || "";
 
     if (!name) {
 
@@ -481,97 +602,121 @@ async function addCategory(e) {
 
     try {
 
-        const { error } =
-            await supabaseClient
-                .from("categories")
-                .insert({
-                    name,
-                    slug: slugify(name)
-                });
+        const {
+            error
+        } = await supabaseClient
+            .from("categories")
+            .insert({
+                name: name,
+                slug: slugify(name)
+            });
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         closeCategoryModal();
 
-        toast("Category added successfully.");
+        toast(
+            "Category added successfully."
+        );
 
         await refresh();
 
     } catch (error) {
 
-        console.error(error);
+        console.error("Add category error:", error);
 
         message(
             "categoryFormMessage",
-            error.message ||
+            error?.message ||
             "Unable to add category."
         );
     }
 }
 
+
 async function deleteCategory(id) {
 
     const category =
         categories.find(
-            item => String(item.id) === String(id)
+            (item) =>
+                String(item.id) === String(id)
         );
 
     if (!category) return;
 
-    if (
-        !confirm(
+    const confirmed =
+        await openConfirmModal(
+            "Delete Category",
             `Delete "${category.name}"?`
-        )
-    ) {
+        );
+
+    if (!confirmed) {
         return;
     }
 
-    const { error } =
-        await supabaseClient
+    try {
+
+        const {
+            error
+        } = await supabaseClient
             .from("categories")
             .delete()
             .eq("id", id);
 
-    if (error) {
+        if (error) {
+            throw error;
+        }
 
-        console.error(error);
+        toast("Category deleted.");
+
+        await refresh();
+
+    } catch (error) {
+
+        console.error(
+            "Delete category error:",
+            error
+        );
 
         toast(
-            error.message ||
+            error?.message ||
             "Unable to delete category.",
             "error"
         );
-
-        return;
     }
-
-    toast("Category deleted.");
-
-    await refresh();
 }
+
 
 /* =========================================================
    CONTENT
    ========================================================= */
 
 const contentTables = [
+
     {
         type: "movie",
         table: "movies"
     },
+
     {
         type: "series",
         table: "series"
     },
+
     {
         type: "music",
         table: "music"
     },
+
     {
         type: "radio",
         table: "radio_stations"
     }
+
 ];
+
 
 async function loadContent() {
 
@@ -579,23 +724,24 @@ async function loadContent() {
 
     for (const source of contentTables) {
 
-        let query =
-            supabaseClient
-                .from(source.table)
-                .select("*");
-
-        const { data, error } =
-            await query;
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from(source.table)
+            .select("*");
 
         if (error) {
+
             console.error(
-                source.table,
+                `${source.table} error:`,
                 error
             );
+
             continue;
         }
 
-        (data || []).forEach(row => {
+        (data || []).forEach((row) => {
 
             all.push({
                 ...row,
@@ -606,28 +752,32 @@ async function loadContent() {
         });
     }
 
-    content = all.sort(
-        (a, b) =>
-            new Date(b.created_at || 0) -
-            new Date(a.created_at || 0)
-    );
+    content =
+        all.sort(
+            (a, b) =>
+                new Date(b.created_at || 0) -
+                new Date(a.created_at || 0)
+        );
 
     renderContent();
     updateStats();
     renderRecent();
+    renderCategories();
 }
+
 
 function categoryName(id) {
 
     const category =
         categories.find(
-            item =>
+            (item) =>
                 String(item.id) ===
                 String(id)
         );
 
     return category?.name || "—";
 }
+
 
 function renderContent() {
 
@@ -637,16 +787,18 @@ function renderContent() {
     if (!body) return;
 
     const search =
-        $("contentSearch")?.value
-            .toLowerCase()
-            .trim() || "";
+        $("contentSearch")
+            ?.value
+            ?.toLowerCase()
+            ?.trim() || "";
 
     const filter =
-        $("contentTypeFilter")?.value ||
-        "all";
+        $("contentTypeFilter")
+            ?.value || "all";
+
 
     const rows =
-        content.filter(item => {
+        content.filter((item) => {
 
             const typeMatch =
                 filter === "all" ||
@@ -667,6 +819,7 @@ function renderContent() {
                 searchMatch;
         });
 
+
     if (!rows.length) {
 
         body.innerHTML = `
@@ -683,108 +836,122 @@ function renderContent() {
         return;
     }
 
+
     body.innerHTML =
-        rows.map(item => {
+        rows
+            .map((item) => {
 
-            const title =
-                item.title ||
-                item.name ||
-                "Untitled";
+                const title =
+                    item.title ||
+                    item.name ||
+                    "Untitled";
 
-            const year =
-                item.release_year ||
-                "—";
+                const year =
+                    item.release_year ||
+                    "—";
 
-            const published =
-                item.is_published;
+                const published =
+                    Boolean(item.is_published);
 
-            return `
-                <tr>
+                return `
+                    <tr>
 
-                    <td>
-                        ${escapeHTML(title)}
-                    </td>
+                        <td>
+                            ${escapeHTML(title)}
+                        </td>
 
-                    <td>
-                        ${escapeHTML(item._type)}
-                    </td>
+                        <td>
+                            ${escapeHTML(item._type)}
+                        </td>
 
-                    <td>
-                        ${escapeHTML(
-                            categoryName(
-                                item.category_id
-                            )
-                        )}
-                    </td>
+                        <td>
+                            ${escapeHTML(
+                                categoryName(
+                                    item.category_id
+                                )
+                            )}
+                        </td>
 
-                    <td>
-                        ${year}
-                    </td>
+                        <td>
+                            ${escapeHTML(year)}
+                        </td>
 
-                    <td>
+                        <td>
 
-                        <span
-                            class="status-badge
-                            ${published
-                                ? "published"
-                                : "draft"}"
-                        >
-                            ${
-                                published
-                                    ? "Published"
-                                    : "Draft"
-                            }
-                        </span>
-
-                    </td>
-
-                    <td>
-
-                        <div
-                            class="table-actions"
-                        >
-
-                            <button
-                                type="button"
-                                class="table-action"
-                                data-edit-id="${item._table}:${item.id}"
+                            <span
+                                class="status-badge ${
+                                    published
+                                        ? "published"
+                                        : "draft"
+                                }"
                             >
-                                ✎
-                            </button>
+                                ${
+                                    published
+                                        ? "Published"
+                                        : "Draft"
+                                }
+                            </span>
 
-                            <button
-                                type="button"
-                                class="table-action delete"
-                                data-delete-id="${item._table}:${item.id}"
-                            >
-                                ×
-                            </button>
+                        </td>
 
-                        </div>
+                        <td>
 
-                    </td>
+                            <div class="table-actions">
 
-                </tr>
-            `;
-        }).join("");
+                                <button
+                                    type="button"
+                                    class="table-action"
+                                    data-edit-id="${escapeHTML(
+                                        item._table
+                                    )}:${escapeHTML(
+                                        item.id
+                                    )}"
+                                    title="Edit"
+                                >
+                                    ✎
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="table-action delete"
+                                    data-delete-id="${escapeHTML(
+                                        item._table
+                                    )}:${escapeHTML(
+                                        item.id
+                                    )}"
+                                    title="Delete"
+                                >
+                                    ×
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+                `;
+            })
+            .join("");
+
 
     body
-        .querySelectorAll(
-            "[data-edit-id]"
-        )
-        .forEach(button => {
+        .querySelectorAll("[data-edit-id]")
+        .forEach((button) => {
 
             button.addEventListener(
                 "click",
                 () => {
 
-                    const [table, id] =
+                    const [
+                        table,
+                        id
+                    ] =
                         button.dataset.editId
                             .split(":");
 
                     const item =
                         content.find(
-                            row =>
+                            (row) =>
                                 row._table === table &&
                                 String(row.id) ===
                                 String(id)
@@ -797,23 +964,25 @@ function renderContent() {
             );
         });
 
+
     body
-        .querySelectorAll(
-            "[data-delete-id]"
-        )
-        .forEach(button => {
+        .querySelectorAll("[data-delete-id]")
+        .forEach((button) => {
 
             button.addEventListener(
                 "click",
                 () => {
 
-                    const [table, id] =
+                    const [
+                        table,
+                        id
+                    ] =
                         button.dataset.deleteId
                             .split(":");
 
                     const item =
                         content.find(
-                            row =>
+                            (row) =>
                                 row._table === table &&
                                 String(row.id) ===
                                 String(id)
@@ -826,6 +995,7 @@ function renderContent() {
             );
         });
 }
+
 
 /* =========================================================
    CONTENT MODAL
@@ -840,11 +1010,12 @@ function openContentModal(item = null) {
 
     $("contentForm")?.reset();
 
-    $("contentId").value = "";
+    if ($("contentId")) {
+        $("contentId").value = "";
+    }
 
     if ($("contentPublished")) {
-        $("contentPublished").checked =
-            true;
+        $("contentPublished").checked = true;
     }
 
     if ($("contentModalTitle")) {
@@ -854,46 +1025,66 @@ function openContentModal(item = null) {
                 : "Add Content";
     }
 
+
     if (item) {
 
-        $("contentId").value =
-            `${item._table}:${item.id}`;
+        if ($("contentId")) {
+            $("contentId").value =
+                `${item._table}:${item.id}`;
+        }
 
-        $("contentTitle").value =
-            item.title ||
-            item.name ||
-            "";
+        if ($("contentTitle")) {
+            $("contentTitle").value =
+                item.title ||
+                item.name ||
+                "";
+        }
 
-        $("contentType").value =
-            item._type;
+        if ($("contentType")) {
+            $("contentType").value =
+                item._type;
+        }
 
-        $("contentYear").value =
-            item.release_year ||
-            "";
+        if ($("contentYear")) {
+            $("contentYear").value =
+                item.release_year ||
+                "";
+        }
 
-        $("contentCategory").value =
-            item.category_id ||
-            "";
+        if ($("contentCategory")) {
+            $("contentCategory").value =
+                item.category_id ||
+                "";
+        }
 
-        $("posterUrl").value =
-            item.poster_url ||
-            item.cover_url ||
-            item.logo_url ||
-            "";
+        if ($("posterUrl")) {
+            $("posterUrl").value =
+                item.poster_url ||
+                item.cover_url ||
+                item.logo_url ||
+                "";
+        }
 
-        $("videoUrl").value =
-            item.video_url ||
-            item.audio_url ||
-            item.stream_url ||
-            "";
+        if ($("videoUrl")) {
+            $("videoUrl").value =
+                item.video_url ||
+                item.audio_url ||
+                item.stream_url ||
+                "";
+        }
 
-        $("contentDescription").value =
-            item.description ||
-            "";
+        if ($("contentDescription")) {
+            $("contentDescription").value =
+                item.description ||
+                "";
+        }
 
-        $("contentPublished").checked =
-            !!item.is_published;
+        if ($("contentPublished")) {
+            $("contentPublished").checked =
+                Boolean(item.is_published);
+        }
     }
+
 
     message(
         "contentFormMessage",
@@ -907,6 +1098,7 @@ function openContentModal(item = null) {
         "false"
     );
 }
+
 
 function closeContentModal() {
 
@@ -923,44 +1115,47 @@ function closeContentModal() {
     );
 }
 
+
 function createPayload(type) {
 
     const title =
         $("contentTitle")
             ?.value
-            .trim() || "";
+            ?.trim() || "";
 
     const year =
-        $("contentYear")?.value;
+        $("contentYear")
+            ?.value || "";
 
     const category =
-        $("contentCategory")?.value ||
-        null;
+        $("contentCategory")
+            ?.value || null;
 
     const poster =
         $("posterUrl")
             ?.value
-            .trim() || null;
+            ?.trim() || null;
 
     const media =
         $("videoUrl")
             ?.value
-            .trim() || null;
+            ?.trim() || null;
 
     const description =
         $("contentDescription")
             ?.value
-            .trim() || null;
+            ?.trim() || null;
 
     const published =
         $("contentPublished")
             ?.checked ?? true;
 
+
     if (type === "movie") {
 
         return {
-            title,
-            description,
+            title: title,
+            description: description,
             release_year:
                 year
                     ? Number(year)
@@ -972,11 +1167,12 @@ function createPayload(type) {
         };
     }
 
+
     if (type === "series") {
 
         return {
-            title,
-            description,
+            title: title,
+            description: description,
             release_year:
                 year
                     ? Number(year)
@@ -987,10 +1183,11 @@ function createPayload(type) {
         };
     }
 
+
     if (type === "music") {
 
         return {
-            title,
+            title: title,
             artist: "",
             cover_url: poster,
             audio_url: media,
@@ -998,11 +1195,12 @@ function createPayload(type) {
         };
     }
 
+
     if (type === "radio") {
 
         return {
             name: title,
-            description,
+            description: description,
             logo_url: poster,
             stream_url: media,
             is_live: false,
@@ -1010,28 +1208,30 @@ function createPayload(type) {
         };
     }
 
+
     throw new Error(
         "Invalid content type."
     );
 }
 
-async function saveContent(e) {
 
-    e.preventDefault();
+async function saveContent(event) {
+
+    event.preventDefault();
 
     const title =
         $("contentTitle")
             ?.value
-            .trim();
+            ?.trim() || "";
 
     const type =
         $("contentType")
-            ?.value ||
-        "movie";
+            ?.value || "movie";
 
     const existing =
         $("contentId")
             ?.value || "";
+
 
     if (!title) {
 
@@ -1043,23 +1243,40 @@ async function saveContent(e) {
         return;
     }
 
+
+    const saveButton =
+        $("saveContentButton");
+
+    if (saveButton) {
+        saveButton.disabled = true;
+    }
+
+
     try {
 
         const payload =
             createPayload(type);
 
+
         if (existing) {
 
-            const [table, id] =
+            const [
+                table,
+                id
+            ] =
                 existing.split(":");
 
-            const { error } =
-                await supabaseClient
-                    .from(table)
-                    .update(payload)
-                    .eq("id", id);
 
-            if (error) throw error;
+            const {
+                error
+            } = await supabaseClient
+                .from(table)
+                .update(payload)
+                .eq("id", id);
+
+            if (error) {
+                throw error;
+            }
 
             toast("Content updated.");
 
@@ -1067,7 +1284,7 @@ async function saveContent(e) {
 
             const source =
                 contentTables.find(
-                    item =>
+                    (item) =>
                         item.type === type
                 );
 
@@ -1077,15 +1294,20 @@ async function saveContent(e) {
                 );
             }
 
-            const { error } =
-                await supabaseClient
-                    .from(source.table)
-                    .insert(payload);
 
-            if (error) throw error;
+            const {
+                error
+            } = await supabaseClient
+                .from(source.table)
+                .insert(payload);
+
+            if (error) {
+                throw error;
+            }
 
             toast("Content added.");
         }
+
 
         closeContentModal();
 
@@ -1093,15 +1315,25 @@ async function saveContent(e) {
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Save content error:",
+            error
+        );
 
         message(
             "contentFormMessage",
-            error.message ||
+            error?.message ||
             "Unable to save content."
         );
+
+    } finally {
+
+        if (saveButton) {
+            saveButton.disabled = false;
+        }
     }
 }
+
 
 async function deleteContent(item) {
 
@@ -1110,37 +1342,50 @@ async function deleteContent(item) {
         item.name ||
         "this content";
 
-    if (
-        !confirm(
+
+    const confirmed =
+        await openConfirmModal(
+            "Delete Content",
             `Delete "${title}"?`
-        )
-    ) {
+        );
+
+    if (!confirmed) {
         return;
     }
 
-    const { error } =
-        await supabaseClient
+
+    try {
+
+        const {
+            error
+        } = await supabaseClient
             .from(item._table)
             .delete()
             .eq("id", item.id);
 
-    if (error) {
+        if (error) {
+            throw error;
+        }
 
-        console.error(error);
+        toast("Content deleted.");
+
+        await refresh();
+
+    } catch (error) {
+
+        console.error(
+            "Delete content error:",
+            error
+        );
 
         toast(
-            error.message ||
+            error?.message ||
             "Unable to delete content.",
             "error"
         );
-
-        return;
     }
-
-    toast("Content deleted.");
-
-    await refresh();
 }
+
 
 /* =========================================================
    STATS
@@ -1150,15 +1395,16 @@ function updateStats() {
 
     const movies =
         content.filter(
-            item =>
+            (item) =>
                 item._type === "movie"
         ).length;
 
     const series =
         content.filter(
-            item =>
+            (item) =>
                 item._type === "series"
         ).length;
+
 
     if ($("statContent")) {
         $("statContent").textContent =
@@ -1185,6 +1431,7 @@ function updateStats() {
     }
 }
 
+
 /* =========================================================
    RECENT CONTENT
    ========================================================= */
@@ -1199,6 +1446,7 @@ function renderRecent() {
     const rows =
         content.slice(0, 5);
 
+
     if (!rows.length) {
 
         container.innerHTML = `
@@ -1211,67 +1459,67 @@ function renderRecent() {
         return;
     }
 
+
     container.innerHTML =
-        rows.map(item => {
+        rows
+            .map((item) => {
 
-            const title =
-                item.title ||
-                item.name ||
-                "Untitled";
+                const title =
+                    item.title ||
+                    item.name ||
+                    "Untitled";
 
-            return `
-                <div
-                    style="
-                        display:flex;
-                        align-items:center;
-                        justify-content:space-between;
-                        gap:12px;
-                        padding:14px 18px;
-                        border-bottom:1px solid
-                        rgba(255,255,255,.05);
-                    "
-                >
+                return `
+                    <div
+                        style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:space-between;
+                            gap:12px;
+                            padding:14px 18px;
+                            border-bottom:1px solid
+                            rgba(255,255,255,.05);
+                        "
+                    >
 
-                    <div>
+                        <div>
 
-                        <strong>
-                            ${escapeHTML(title)}
-                        </strong>
+                            <strong>
+                                ${escapeHTML(title)}
+                            </strong>
 
-                        <small
-                            style="
-                                display:block;
-                                margin-top:4px;
-                                color:var(--text-muted);
-                            "
+                            <small
+                                style="
+                                    display:block;
+                                    margin-top:4px;
+                                    color:var(--text-muted);
+                                "
+                            >
+                                ${escapeHTML(item._type)}
+                            </small>
+
+                        </div>
+
+                        <span
+                            class="status-badge ${
+                                item.is_published
+                                    ? "published"
+                                    : "draft"
+                            }"
                         >
-                            ${escapeHTML(
-                                item._type
-                            )}
-                        </small>
+                            ${
+                                item.is_published
+                                    ? "Published"
+                                    : "Draft"
+                            }
+                        </span>
 
                     </div>
-
-                    <span
-                        class="status-badge
-                        ${
-                            item.is_published
-                                ? "published"
-                                : "draft"
-                        }"
-                    >
-                        ${
-                            item.is_published
-                                ? "Published"
-                                : "Draft"
-                        }
-                    </span>
-
-                </div>
-            `;
-
-        }).join("");
+                `;
+            })
+            .join("");
 }
+
 
 /* =========================================================
    SETTINGS
@@ -1279,17 +1527,20 @@ function renderRecent() {
 
 async function loadSettings() {
 
-    const { data, error } =
-        await supabaseClient
-            .from("app_settings")
-            .select("key,value")
-            .in(
-                "key",
-                [
-                    "site_name",
-                    "site_description"
-                ]
-            );
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("app_settings")
+        .select("key,value")
+        .in(
+            "key",
+            [
+                "site_name",
+                "site_description"
+            ]
+        );
+
 
     if (error) {
 
@@ -1301,16 +1552,17 @@ async function loadSettings() {
         return;
     }
 
+
     const settings =
         Object.fromEntries(
             (data || []).map(
-                item =>
-                    [
-                        item.key,
-                        item.value
-                    ]
+                (item) => [
+                    item.key,
+                    item.value
+                ]
             )
         );
+
 
     if ($("siteName")) {
         $("siteName").value =
@@ -1325,24 +1577,30 @@ async function loadSettings() {
     }
 }
 
-async function saveSettings(e) {
 
-    e.preventDefault();
+async function saveSettings(event) {
+
+    event.preventDefault();
+
 
     const name =
         $("siteName")
             ?.value
-            .trim() ||
+            ?.trim() ||
         "StreamBox";
 
     const description =
         $("siteDescription")
             ?.value
-            .trim() ||
+            ?.trim() ||
         "";
 
-    const { error } =
-        await supabaseClient
+
+    try {
+
+        const {
+            error
+        } = await supabaseClient
             .from("app_settings")
             .upsert(
                 [
@@ -1360,21 +1618,27 @@ async function saveSettings(e) {
                 }
             );
 
-    if (error) {
+        if (error) {
+            throw error;
+        }
 
-        console.error(error);
+        toast("Settings saved.");
+
+    } catch (error) {
+
+        console.error(
+            "Settings save error:",
+            error
+        );
 
         toast(
-            error.message ||
+            error?.message ||
             "Unable to save settings.",
             "error"
         );
-
-        return;
     }
-
-    toast("Settings saved.");
 }
+
 
 /* =========================================================
    USERS
@@ -1400,20 +1664,88 @@ function loadUsers() {
     `;
 }
 
+
 /* =========================================================
-   LOGOUT
+   CONFIRM MODAL
    ========================================================= */
 
-async function logout() {
+let confirmResolver = null;
 
-    await supabaseClient.auth.signOut();
 
-    window.location.href =
-        "login.html";
+function openConfirmModal(
+    title = "Are you sure?",
+    text = "This action cannot be undone."
+) {
+
+    return new Promise((resolve) => {
+
+        const modal =
+            $("confirmModal");
+
+        if (!modal) {
+
+            resolve(
+                window.confirm(text)
+            );
+
+            return;
+        }
+
+
+        confirmResolver = resolve;
+
+
+        if ($("confirmTitle")) {
+            $("confirmTitle").textContent =
+                title;
+        }
+
+        if ($("confirmMessage")) {
+            $("confirmMessage").textContent =
+                text;
+        }
+
+
+        modal.classList.remove("hidden");
+
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+    });
 }
 
+
+function closeConfirmModal(result = false) {
+
+    const modal =
+        $("confirmModal");
+
+    if (modal) {
+
+        modal.classList.add("hidden");
+
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+    }
+
+
+    if (confirmResolver) {
+
+        const resolve =
+            confirmResolver;
+
+        confirmResolver = null;
+
+        resolve(result);
+    }
+}
+
+
 /* =========================================================
-   MODALS
+   MODALS / EVENTS
    ========================================================= */
 
 function initModals() {
@@ -1424,11 +1756,13 @@ function initModals() {
             () => openContentModal()
         );
 
+
     $("addCategoryButton")
         ?.addEventListener(
             "click",
             openCategoryModal
         );
+
 
     $("contentForm")
         ?.addEventListener(
@@ -1436,11 +1770,13 @@ function initModals() {
             saveContent
         );
 
+
     $("categoryForm")
         ?.addEventListener(
             "submit",
             addCategory
         );
+
 
     $("platformSettingsForm")
         ?.addEventListener(
@@ -1448,17 +1784,56 @@ function initModals() {
             saveSettings
         );
 
+
     document
-        .querySelectorAll(
-            "[data-close-modal]"
-        )
-        .forEach(element => {
+        .querySelectorAll("[data-close-modal]")
+        .forEach((element) => {
 
             element.addEventListener(
                 "click",
                 closeContentModal
             );
+
         });
+
+
+    document
+        .querySelectorAll("[data-close-category-modal]")
+        .forEach((element) => {
+
+            element.addEventListener(
+                "click",
+                closeCategoryModal
+            );
+
+        });
+
+
+    document
+        .querySelectorAll("[data-close-confirm]")
+        .forEach((element) => {
+
+            element.addEventListener(
+                "click",
+                () => closeConfirmModal(false)
+            );
+
+        });
+
+
+    $("cancelConfirm")
+        ?.addEventListener(
+            "click",
+            () => closeConfirmModal(false)
+        );
+
+
+    $("confirmAction")
+        ?.addEventListener(
+            "click",
+            () => closeConfirmModal(true)
+        );
+
 
     $("logoutButton")
         ?.addEventListener(
@@ -1466,11 +1841,13 @@ function initModals() {
             logout
         );
 
+
     $("settingsLogoutButton")
         ?.addEventListener(
             "click",
             logout
         );
+
 
     $("contentSearch")
         ?.addEventListener(
@@ -1478,39 +1855,65 @@ function initModals() {
             renderContent
         );
 
+
     $("contentTypeFilter")
         ?.addEventListener(
             "change",
             renderContent
         );
 
-    document
-        .querySelectorAll(
-            "[data-close-category-modal]"
-        )
-        .forEach(element => {
-
-            element.addEventListener(
-                "click",
-                closeCategoryModal
-            );
-        });
 
     document.addEventListener(
         "keydown",
-        e => {
+        (event) => {
 
-            if (e.key !== "Escape")
+            if (event.key !== "Escape") {
                 return;
+            }
 
             closeContentModal();
             closeCategoryModal();
+
+            if (
+                $("confirmModal") &&
+                !$("confirmModal")
+                    .classList
+                    .contains("hidden")
+            ) {
+                closeConfirmModal(false);
+            }
         }
     );
 }
 
+
 /* =========================================================
-   REFRESH EVERYTHING
+   LOGOUT
+   ========================================================= */
+
+async function logout() {
+
+    try {
+
+        await supabaseClient.auth.signOut();
+
+    } catch (error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+    } finally {
+
+        window.location.href =
+            "login.html";
+    }
+}
+
+
+/* =========================================================
+   REFRESH
    ========================================================= */
 
 async function refresh() {
@@ -1524,34 +1927,42 @@ async function refresh() {
     loadUsers();
 }
 
+
 /* =========================================================
    DASHBOARD INIT
    ========================================================= */
 
 async function initDashboard() {
 
-    if (!$("adminApp"))
+    if (!$("adminApp")) {
         return;
+    }
+
 
     const user =
         await protectDashboard();
 
-    if (!user)
+    if (!user) {
         return;
+    }
+
 
     const email =
         user.email ||
         "Admin";
+
 
     if ($("adminEmail")) {
         $("adminEmail").textContent =
             email;
     }
 
+
     if ($("settingsAdminEmail")) {
         $("settingsAdminEmail").textContent =
             email;
     }
+
 
     if ($("accountAvatar")) {
         $("accountAvatar").textContent =
@@ -1560,12 +1971,32 @@ async function initDashboard() {
                 .toUpperCase();
     }
 
+
     initNavigation();
+
+    initSidebar();
 
     initModals();
 
-    await refresh();
+
+    try {
+
+        await refresh();
+
+    } catch (error) {
+
+        console.error(
+            "Dashboard loading error:",
+            error
+        );
+
+        toast(
+            "Some dashboard data could not be loaded.",
+            "warning"
+        );
+    }
 }
+
 
 /* =========================================================
    START
